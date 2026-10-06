@@ -29,7 +29,7 @@ export {
   updateTranslations,
   updateTranslationTags,
   updateUserPermissions,
-} from "./sdk.gen";
+} from './sdk.gen';
 export {
   type AddLocaleData,
   type AddLocaleError,
@@ -214,4 +214,4 @@ export {
   type UpdateUserPermissionsResponse,
   type UpdateUserPermissionsResponses,
   type User,
-} from "./types";
+} from './types';

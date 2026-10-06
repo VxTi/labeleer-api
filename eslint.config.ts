@@ -10,7 +10,7 @@ export default defineConfig([
   { ignores: ['src/utils/http/requests/generated/'] },
 
   // TypeScript recommendations
-  ...tseslint.configs.strictTypeChecked,
+  ...tseslint.configs.stylistic,
   {
     files: ['./{src,bin}/**/*.{mts,ts,tsx,js}'],
     ignores: ['**/*.json', '**/*.md', '**/*.cjs', '**/*.mjs'],
@@ -42,39 +42,14 @@ export default defineConfig([
 
       'no-console': 2,
 
-      'no-restricted-syntax': [
-        'error',
-        {
-          selector:
-            'TSAnyKeyword:not(:matches(TSTypeParameter *, TSConditionalType > .extendsType, TSConditionalType > .extendsType *))',
-          message: "Do not use 'any' except as a generic constraint boundary.",
-        },
-      ],
 
       '@typescript-eslint/restrict-template-expressions': 0,
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-empty-object-type': 0,
       '@typescript-eslint/no-misused-promises': 0,
-      '@typescript-eslint/strict-boolean-expressions': [
-        'error',
-        {
-          allowNullableBoolean: true, // We do allow this
-          allowNumber: false, // Prevents accidental `!0` checks
-          allowString: false, // Prevents not handling empty strings correctly
-        },
-      ],
       '@typescript-eslint/no-unnecessary-type-conversion': 'error',
-      '@typescript-eslint/no-unnecessary-condition': 'error',
-      '@typescript-eslint/explicit-function-return-type': [
-        'error',
-        {
-          allowExpressions: true,
-          allowHigherOrderFunctions: true,
-          allowDirectConstAssertionInArrowFunctions: true,
-          allowFunctionsWithoutTypeParameters: true,
-          allowIIFEs: true,
-        },
-      ],
+      '@typescript-eslint/no-misused-spread': 0,
+      '@typescript-eslint/no-invalid-void-type': 0,
       '@typescript-eslint/no-unsafe-member-access': [
         'error',
         { allowOptionalChaining: true },

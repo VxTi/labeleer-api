@@ -7,8 +7,8 @@ import type {
   RequestResult,
   ServerSentEventsResult,
   TDataShape,
-} from "./client";
-import { client } from "./client.gen";
+} from './client';
+import { client } from './client.gen';
 import type {
   AddLocaleData,
   AddLocaleErrors,
@@ -92,7 +92,7 @@ import type {
   UpdateUserPermissionsData,
   UpdateUserPermissionsErrors,
   UpdateUserPermissionsResponses,
-} from "./types";
+} from './types';
 import {
   zAddLocaleResponse,
   zCreateAccessTokenResponse2,
@@ -121,7 +121,7 @@ import {
   zUpdateTranslationsResponse,
   zUpdateTranslationTagsResponse2,
   zUpdateUserPermissionsResponse,
-} from "./zod.gen";
+} from './zod.gen';
 
 export type Options<
   TData extends TDataShape = TDataShape,
@@ -142,21 +142,21 @@ export type Options<
 };
 
 export const getInvitations = <ThrowOnError extends boolean = false>(
-  options?: Options<GetInvitationsData, ThrowOnError>,
+  options?: Options<GetInvitationsData, ThrowOnError>
 ): RequestResult<GetInvitationsResponses, GetInvitationsErrors, ThrowOnError> =>
   (options?.client ?? client).get<
     GetInvitationsResponses,
     GetInvitationsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zGetInvitationsResponse2.parseAsync(data),
-    url: "/api/invitations",
+    url: '/api/invitations',
     ...options,
   });
 
 export const respondToInvitation = <ThrowOnError extends boolean = false>(
-  options: Options<RespondToInvitationData, ThrowOnError>,
+  options: Options<RespondToInvitationData, ThrowOnError>
 ): RequestResult<
   RespondToInvitationResponses,
   RespondToInvitationErrors,
@@ -167,18 +167,18 @@ export const respondToInvitation = <ThrowOnError extends boolean = false>(
     RespondToInvitationErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zRespondToInvitationResponse.parseAsync(data),
-    url: "/api/invitations",
+    url: '/api/invitations',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const revokeAccessToken = <ThrowOnError extends boolean = false>(
-  options: Options<RevokeAccessTokenData, ThrowOnError>,
+  options: Options<RevokeAccessTokenData, ThrowOnError>
 ): RequestResult<
   RevokeAccessTokenResponses,
   RevokeAccessTokenErrors,
@@ -189,14 +189,14 @@ export const revokeAccessToken = <ThrowOnError extends boolean = false>(
     RevokeAccessTokenErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zRevokeAccessTokenResponse.parseAsync(data),
-    url: "/api/project/{projectId}/access-token",
+    url: '/api/project/{projectId}/access-token',
     ...options,
   });
 
 export const updateAccessToken = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateAccessTokenData, ThrowOnError>,
+  options: Options<UpdateAccessTokenData, ThrowOnError>
 ): RequestResult<
   UpdateAccessTokenResponses,
   UpdateAccessTokenErrors,
@@ -207,18 +207,18 @@ export const updateAccessToken = <ThrowOnError extends boolean = false>(
     UpdateAccessTokenErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zUpdateAccessTokenResponse2.parseAsync(data),
-    url: "/api/project/{projectId}/access-token",
+    url: '/api/project/{projectId}/access-token',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const createAccessToken = <ThrowOnError extends boolean = false>(
-  options: Options<CreateAccessTokenData, ThrowOnError>,
+  options: Options<CreateAccessTokenData, ThrowOnError>
 ): RequestResult<
   CreateAccessTokenResponses,
   CreateAccessTokenErrors,
@@ -229,18 +229,18 @@ export const createAccessToken = <ThrowOnError extends boolean = false>(
     CreateAccessTokenErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zCreateAccessTokenResponse2.parseAsync(data),
-    url: "/api/project/{projectId}/access-token",
+    url: '/api/project/{projectId}/access-token',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const inviteUserToProject = <ThrowOnError extends boolean = false>(
-  options: Options<InviteUserToProjectData, ThrowOnError>,
+  options: Options<InviteUserToProjectData, ThrowOnError>
 ): RequestResult<
   InviteUserToProjectResponses,
   InviteUserToProjectErrors,
@@ -251,50 +251,50 @@ export const inviteUserToProject = <ThrowOnError extends boolean = false>(
     InviteUserToProjectErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zInviteUserToProjectResponse.parseAsync(data),
-    url: "/api/project/{projectId}/invite",
+    url: '/api/project/{projectId}/invite',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const deleteProject = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteProjectData, ThrowOnError>,
+  options: Options<DeleteProjectData, ThrowOnError>
 ): RequestResult<DeleteProjectResponses, DeleteProjectErrors, ThrowOnError> =>
   (options.client ?? client).delete<
     DeleteProjectResponses,
     DeleteProjectErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zDeleteProjectResponse.parseAsync(data),
-    url: "/api/project/{projectId}",
+    url: '/api/project/{projectId}',
     ...options,
   });
 
 export const updateProject = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateProjectData, ThrowOnError>,
+  options: Options<UpdateProjectData, ThrowOnError>
 ): RequestResult<UpdateProjectResponses, UpdateProjectErrors, ThrowOnError> =>
   (options.client ?? client).put<
     UpdateProjectResponses,
     UpdateProjectErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zUpdateProjectResponse2.parseAsync(data),
-    url: "/api/project/{projectId}",
+    url: '/api/project/{projectId}',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const removeUserFromProject = <ThrowOnError extends boolean = false>(
-  options: Options<RemoveUserFromProjectData, ThrowOnError>,
+  options: Options<RemoveUserFromProjectData, ThrowOnError>
 ): RequestResult<
   RemoveUserFromProjectResponses,
   RemoveUserFromProjectErrors,
@@ -305,14 +305,14 @@ export const removeUserFromProject = <ThrowOnError extends boolean = false>(
     RemoveUserFromProjectErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zRemoveUserFromProjectResponse.parseAsync(data),
-    url: "/api/project/{projectId}/users/{userId}",
+    url: '/api/project/{projectId}/users/{userId}',
     ...options,
   });
 
 export const getUserProjectPermissions = <ThrowOnError extends boolean = false>(
-  options: Options<GetUserProjectPermissionsData, ThrowOnError>,
+  options: Options<GetUserProjectPermissionsData, ThrowOnError>
 ): RequestResult<
   GetUserProjectPermissionsResponses,
   GetUserProjectPermissionsErrors,
@@ -323,14 +323,14 @@ export const getUserProjectPermissions = <ThrowOnError extends boolean = false>(
     GetUserProjectPermissionsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zGetUserProjectPermissionsResponse.parseAsync(data),
-    url: "/api/project/{projectId}/users/{userId}",
+    url: '/api/project/{projectId}/users/{userId}',
     ...options,
   });
 
 export const updateUserPermissions = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateUserPermissionsData, ThrowOnError>,
+  options: Options<UpdateUserPermissionsData, ThrowOnError>
 ): RequestResult<
   UpdateUserPermissionsResponses,
   UpdateUserPermissionsErrors,
@@ -341,44 +341,44 @@ export const updateUserPermissions = <ThrowOnError extends boolean = false>(
     UpdateUserPermissionsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zUpdateUserPermissionsResponse.parseAsync(data),
-    url: "/api/project/{projectId}/users/{userId}",
+    url: '/api/project/{projectId}/users/{userId}',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const getProjects = <ThrowOnError extends boolean = false>(
-  options?: Options<GetProjectsData, ThrowOnError>,
+  options?: Options<GetProjectsData, ThrowOnError>
 ): RequestResult<GetProjectsResponses, GetProjectsErrors, ThrowOnError> =>
   (options?.client ?? client).get<
     GetProjectsResponses,
     GetProjectsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zGetProjectsResponse2.parseAsync(data),
-    url: "/api/project",
+    url: '/api/project',
     ...options,
   });
 
 export const createProject = <ThrowOnError extends boolean = false>(
-  options: Options<CreateProjectData, ThrowOnError>,
+  options: Options<CreateProjectData, ThrowOnError>
 ): RequestResult<CreateProjectResponses, CreateProjectErrors, ThrowOnError> =>
   (options.client ?? client).post<
     CreateProjectResponses,
     CreateProjectErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zCreateProjectResponse2.parseAsync(data),
-    url: "/api/project",
+    url: '/api/project',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
@@ -388,21 +388,21 @@ export const generateTranslations = <ThrowOnError extends boolean = false>(
     GenerateTranslationsData,
     ThrowOnError,
     GenerateTranslationsResponse
-  >,
+  >
 ): Promise<ServerSentEventsResult<GenerateTranslationsResponses>> =>
   (options.client ?? client).sse.post<
     GenerateTranslationsResponses,
     GenerateTranslationsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zGenerateTranslationsResponse.parseAsync(data),
-    url: "/api/translation/generate",
+    url: '/api/translation/generate',
     ...options,
   });
 
 export const deleteTranslation = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteTranslationData, ThrowOnError>,
+  options: Options<DeleteTranslationData, ThrowOnError>
 ): RequestResult<
   DeleteTranslationResponses,
   DeleteTranslationErrors,
@@ -413,28 +413,28 @@ export const deleteTranslation = <ThrowOnError extends boolean = false>(
     DeleteTranslationErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zDeleteTranslationResponse.parseAsync(data),
-    url: "/api/translation",
+    url: '/api/translation',
     ...options,
   });
 
 export const getTranslation = <ThrowOnError extends boolean = false>(
-  options: Options<GetTranslationData, ThrowOnError>,
+  options: Options<GetTranslationData, ThrowOnError>
 ): RequestResult<GetTranslationResponses, GetTranslationErrors, ThrowOnError> =>
   (options.client ?? client).get<
     GetTranslationResponses,
     GetTranslationErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zGetTranslationResponse.parseAsync(data),
-    url: "/api/translation",
+    url: '/api/translation',
     ...options,
   });
 
 export const renameTranslationKey = <ThrowOnError extends boolean = false>(
-  options: Options<RenameTranslationKeyData, ThrowOnError>,
+  options: Options<RenameTranslationKeyData, ThrowOnError>
 ): RequestResult<
   RenameTranslationKeyResponses,
   RenameTranslationKeyErrors,
@@ -445,18 +445,18 @@ export const renameTranslationKey = <ThrowOnError extends boolean = false>(
     RenameTranslationKeyErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zRenameTranslationKeyResponse.parseAsync(data),
-    url: "/api/translation",
+    url: '/api/translation',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const getTranslationTags = <ThrowOnError extends boolean = false>(
-  options: Options<GetTranslationTagsData, ThrowOnError>,
+  options: Options<GetTranslationTagsData, ThrowOnError>
 ): RequestResult<
   GetTranslationTagsResponses,
   GetTranslationTagsErrors,
@@ -467,14 +467,14 @@ export const getTranslationTags = <ThrowOnError extends boolean = false>(
     GetTranslationTagsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zGetTranslationTagsResponse2.parseAsync(data),
-    url: "/api/translation/tags",
+    url: '/api/translation/tags',
     ...options,
   });
 
 export const updateTranslationTags = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateTranslationTagsData, ThrowOnError>,
+  options: Options<UpdateTranslationTagsData, ThrowOnError>
 ): RequestResult<
   UpdateTranslationTagsResponses,
   UpdateTranslationTagsErrors,
@@ -485,18 +485,18 @@ export const updateTranslationTags = <ThrowOnError extends boolean = false>(
     UpdateTranslationTagsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zUpdateTranslationTagsResponse2.parseAsync(data),
-    url: "/api/translation/tags",
+    url: '/api/translation/tags',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const exportTranslations = <ThrowOnError extends boolean = false>(
-  options: Options<ExportTranslationsData, ThrowOnError>,
+  options: Options<ExportTranslationsData, ThrowOnError>
 ): RequestResult<
   ExportTranslationsResponses,
   ExportTranslationsErrors,
@@ -507,60 +507,58 @@ export const exportTranslations = <ThrowOnError extends boolean = false>(
     ExportTranslationsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zExportTranslationsResponse.parseAsync(data),
-    url: "/api/translations/export",
+    url: '/api/translations/export',
     ...options,
   });
 
 export const deleteLocale = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteLocaleData, ThrowOnError>,
+  options: Options<DeleteLocaleData, ThrowOnError>
 ): RequestResult<DeleteLocaleResponses, DeleteLocaleErrors, ThrowOnError> =>
   (options.client ?? client).delete<
     DeleteLocaleResponses,
     DeleteLocaleErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zDeleteLocaleResponse.parseAsync(data),
-    url: "/api/translations/locales",
+    url: '/api/translations/locales',
     ...options,
   });
 
 export const getLocales = <ThrowOnError extends boolean = false>(
-  options: Options<GetLocalesData, ThrowOnError>,
+  options: Options<GetLocalesData, ThrowOnError>
 ): RequestResult<GetLocalesResponses, GetLocalesErrors, ThrowOnError> =>
   (options.client ?? client).get<
     GetLocalesResponses,
     GetLocalesErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
-      await zGetLocalesResponse.parseAsync(data),
-    url: "/api/translations/locales",
+    responseValidator: async data => await zGetLocalesResponse.parseAsync(data),
+    url: '/api/translations/locales',
     ...options,
   });
 
 export const addLocale = <ThrowOnError extends boolean = false>(
-  options: Options<AddLocaleData, ThrowOnError>,
+  options: Options<AddLocaleData, ThrowOnError>
 ): RequestResult<AddLocaleResponses, AddLocaleErrors, ThrowOnError> =>
   (options.client ?? client).post<
     AddLocaleResponses,
     AddLocaleErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
-      await zAddLocaleResponse.parseAsync(data),
-    url: "/api/translations/locales",
+    responseValidator: async data => await zAddLocaleResponse.parseAsync(data),
+    url: '/api/translations/locales',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const updateReferenceLocale = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateReferenceLocaleData, ThrowOnError>,
+  options: Options<UpdateReferenceLocaleData, ThrowOnError>
 ): RequestResult<
   UpdateReferenceLocaleResponses,
   UpdateReferenceLocaleErrors,
@@ -571,18 +569,18 @@ export const updateReferenceLocale = <ThrowOnError extends boolean = false>(
     UpdateReferenceLocaleErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zUpdateReferenceLocaleResponse.parseAsync(data),
-    url: "/api/translations/locales",
+    url: '/api/translations/locales',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const deleteTranslations = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteTranslationsData, ThrowOnError>,
+  options: Options<DeleteTranslationsData, ThrowOnError>
 ): RequestResult<
   DeleteTranslationsResponses,
   DeleteTranslationsErrors,
@@ -593,18 +591,18 @@ export const deleteTranslations = <ThrowOnError extends boolean = false>(
     DeleteTranslationsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zDeleteTranslationsResponse.parseAsync(data),
-    url: "/api/translations",
+    url: '/api/translations',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });
 
 export const getTranslations = <ThrowOnError extends boolean = false>(
-  options: Options<GetTranslationsData, ThrowOnError>,
+  options: Options<GetTranslationsData, ThrowOnError>
 ): RequestResult<
   GetTranslationsResponses,
   GetTranslationsErrors,
@@ -615,14 +613,14 @@ export const getTranslations = <ThrowOnError extends boolean = false>(
     GetTranslationsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zGetTranslationsResponse2.parseAsync(data),
-    url: "/api/translations",
+    url: '/api/translations',
     ...options,
   });
 
 export const updateTranslations = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateTranslationsData, ThrowOnError>,
+  options: Options<UpdateTranslationsData, ThrowOnError>
 ): RequestResult<
   UpdateTranslationsResponses,
   UpdateTranslationsErrors,
@@ -633,12 +631,12 @@ export const updateTranslations = <ThrowOnError extends boolean = false>(
     UpdateTranslationsErrors,
     ThrowOnError
   >({
-    responseValidator: async (data) =>
+    responseValidator: async data =>
       await zUpdateTranslationsResponse.parseAsync(data),
-    url: "/api/translations",
+    url: '/api/translations',
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
   });

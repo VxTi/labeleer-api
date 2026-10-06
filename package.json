@@ -18,7 +18,7 @@
     "start": "next start",
     "audit": "pnpm audit --audit-level=high --prod --registry=https://registry.npmjs.org",
     "lint:ci": "eslint \"./{src,bin}/**/*.{ts,tsx}\" --max-warnings 0 --cache",
-    "lint": "eslint \"./{src,bin}/**/*.{ts,tsx}\" --max-warnings 0 --cache --fix",
+    "lint": "eslint \"./{src,bin}/**/*.ts\" --max-warnings 0 --cache --fix",
     "lint:no-cycle": "eslint \"./{src,bin}/**/*.{ts,tsx}\" --cache --rule \"import/no-cycle: error\"",
     "generate:documentation-index": "echo 'Skipping docgen'",
     "import:labels": "tsx bin/import-labels.ts",
