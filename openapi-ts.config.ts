@@ -9,7 +9,7 @@ export default defineConfig({
   output: {
     path: './src',
     clean: true,
-    postProcess: ['prettier'],
+    postProcess: ['prettier', 'eslint'],
   },
   plugins: [
     {
