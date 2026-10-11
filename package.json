@@ -1,11 +1,12 @@
 {
-  "name": "labeleer-cli",
+  "name": "labeleer-api",
+  "type": "module",
+  "description": "Wrapper for Labeleer API interaction",
   "version": "1.0.0",
   "private": false,
   "homepage": "https://labeleer.com",
   "license": "MIT",
   "author": "Luca Warmenhoven",
-  "type": "module",
   "scripts": {
     "check:types": "tsc --noEmit && rm tsconfig.tsbuildinfo",
     "import:openapi": "tsx bin/import-spec.ts",
@@ -13,6 +14,13 @@
     "generate:api": "pnpm import:openapi && pnpm generate:client",
     "build": "npm run generate:api && tsc --p tsconfig.json",
     "prepublishOnly": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.js",
+      "import": "./index.js",
+      "require": "./index.js"
+    }
   },
   "dependencies": {
     "zod": "^4.6.5"
@@ -27,10 +35,6 @@
     "typescript": "^6.0.2",
     "typescript7": "npm:typescript@^7.0.2"
   },
-  "browserslist": [
-    "defaults",
-    "not dead"
-  ],
   "engines": {
     "node": ">=24"
   },
