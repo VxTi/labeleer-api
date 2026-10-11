@@ -6,8 +6,8 @@ import {
   type Config,
   createClient,
   createConfig,
-} from './client';
-import type { ClientOptions as ClientOptions2 } from './types';
+} from './client/index.js';
+import type { ClientOptions as ClientOptions2 } from './types/index.js';
 
 /**
  * The `createClientConfig()` function will be called on client initialization

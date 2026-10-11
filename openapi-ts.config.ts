@@ -10,6 +10,10 @@ export default defineConfig({
     path: './src',
     clean: true,
     postProcess: ['prettier', 'eslint'],
+    preferExportAll: true,
+    module: {
+      extension: '.js'
+    }
   },
   plugins: [
     {

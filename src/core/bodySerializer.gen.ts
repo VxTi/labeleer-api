@@ -4,7 +4,7 @@ import type {
   ArrayStyle,
   ObjectStyle,
   SerializerOptions,
-} from './pathSerializer.gen';
+} from './pathSerializer.gen.js';
 
 export type QuerySerializer = (query: Record<string, unknown>) => string;
 
@@ -59,9 +59,7 @@ export const formDataBodySerializer = {
         return;
       }
       if (Array.isArray(value)) {
-        value.forEach(v => {
-          serializeFormDataPair(data, key, v);
-        });
+        value.forEach(v => serializeFormDataPair(data, key, v));
       } else {
         serializeFormDataPair(data, key, value);
       }
@@ -87,9 +85,7 @@ export const urlSearchParamsBodySerializer = {
         return;
       }
       if (Array.isArray(value)) {
-        value.forEach(v => {
-          serializeUrlSearchParamsPair(data, key, v);
-        });
+        value.forEach(v => serializeUrlSearchParamsPair(data, key, v));
       } else {
         serializeUrlSearchParamsPair(data, key, value);
       }
