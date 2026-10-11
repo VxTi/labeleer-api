@@ -1,8 +1,9 @@
 {
-  "name": "labeleer-api",
+  "name": "@labeleer/api",
   "type": "module",
   "description": "Wrapper for Labeleer API interaction",
   "version": "1.0.0",
+  "sideEffects": false,
   "private": false,
   "homepage": "https://labeleer.com",
   "license": "MIT",
@@ -17,11 +18,12 @@
   },
   "exports": {
     ".": {
-      "types": "./index.js",
-      "import": "./index.js",
-      "require": "./index.js"
+      "types": "./dist/index.js",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     }
   },
+  "files": ["dist"],
   "dependencies": {
     "zod": "^4.6.5"
   },
