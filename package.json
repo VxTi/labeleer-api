@@ -1,5 +1,5 @@
 {
-  "name": "labeleer-api",
+  "name": "@labeleer/api",
   "type": "module",
   "description": "Wrapper for Labeleer API interaction",
   "version": "1.0.0",
