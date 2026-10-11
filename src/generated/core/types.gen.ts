@@ -32,10 +32,11 @@ export type Client<
   getConfig: () => Config;
   request: RequestFn;
   setConfig: (config: Config) => Config;
-} & Record<HttpMethod, MethodFn> &
-  ([SseFn] extends [never]
+} & {
+  [K in HttpMethod]: MethodFn;
+} & ([SseFn] extends [never]
     ? { sse?: never }
-    : { sse: Record<HttpMethod, SseFn> });
+    : { sse: { [K in HttpMethod]: SseFn } });
 
 export interface Config {
   /**
@@ -105,7 +106,7 @@ export interface Config {
 /**
  * Arbitrary metadata passed through the `meta` request option.
  */
-
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ClientMeta {}
 
 type IsExactlyNeverOrNeverUndefined<T> = [T] extends [never]

@@ -7,18 +7,18 @@ import { defineConfig } from '@hey-api/openapi-ts';
 export default defineConfig({
   input: './openapi.yaml',
   output: {
-    path: './src',
+    path: './src/generated',
     clean: true,
-    postProcess: ['prettier', 'eslint'],
+    postProcess: ['prettier'],
     preferExportAll: true,
     module: {
-      extension: '.js'
-    }
+      extension: '.js',
+    },
   },
   plugins: [
     {
       name: '@hey-api/typescript',
-      enums: true,
+      enums: 'typescript-const',
       // Places the request and response types in `types/`.
       $hooks: { symbols: { getFilePath: () => 'types/index' } },
     },

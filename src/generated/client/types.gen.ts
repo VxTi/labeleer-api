@@ -88,7 +88,7 @@ export interface RequestOptions<
   /**
    * Security mechanism(s) to use for the request.
    */
-  security?: readonly Auth[];
+  security?: ReadonlyArray<Auth>;
   url: Url;
 }
 
@@ -162,6 +162,7 @@ type MethodFn = <
 
 type SseFn = <
   TData = unknown,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _TError = unknown,
   ThrowOnError extends boolean = false,
   TResponseStyle extends ResponseStyle = 'fields',
