@@ -69,5 +69,5 @@ const wrapper = {
     },
   },
 };
-
+export { wrapper as labeleer };
 export default wrapper;
