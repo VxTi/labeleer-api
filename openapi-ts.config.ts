@@ -22,12 +22,14 @@ export default defineConfig({
       // Places the request and response types in `types/`.
       $hooks: { symbols: { getFilePath: () => 'types/index' } },
     },
-    '@hey-api/client-fetch',
+    {
+      name: '@hey-api/client-fetch',
+      baseUrl: 'https://labeleer.com',
+    },
+    { name: 'zod' },
     {
       name: '@hey-api/sdk',
-      validator: {
-        response: 'zod',
-      },
+      validator: true,
     },
   ],
 });

@@ -2,7 +2,7 @@
   "name": "@labeleer/api",
   "type": "module",
   "description": "Wrapper for Labeleer API interaction",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "homepage": "https://labeleer.com",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "import:openapi": "tsx bin/import-spec.ts",
     "generate:client": "openapi-ts",
     "generate:api": "pnpm import:openapi && pnpm generate:client",
-    "build": "npm run generate:api && tsc --p tsconfig.json",
+    "build": "rm -rf ./dist && npm run generate:api && tsc --p tsconfig.json",
     "prepublishOnly": "npm run build"
   },
   "exports": {
