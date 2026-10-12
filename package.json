@@ -2,7 +2,7 @@
   "name": "@labeleer/api",
   "type": "module",
   "description": "Wrapper for Labeleer API interaction",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "homepage": "https://labeleer.com",
   "license": "MIT",
