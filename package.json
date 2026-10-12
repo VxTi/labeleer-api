@@ -2,7 +2,7 @@
   "name": "@labeleer/api",
   "type": "module",
   "description": "Wrapper for Labeleer API interaction",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "homepage": "https://labeleer.com",
   "license": "MIT",
@@ -15,11 +15,12 @@
     "build": "rm -rf ./dist && npm run generate:api && tsc --p tsconfig.json",
     "prepublishOnly": "npm run build"
   },
+  "files": ["dist"],
   "exports": {
     ".": {
-      "types": "./index.js",
-      "import": "./index.js",
-      "require": "./index.js"
+      "types": "./dist/index.js",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     }
   },
   "dependencies": {
