@@ -140,7 +140,7 @@ import {
   zRevokeAccessTokenResponse,
   zUpdateAccessTokenBody,
   zUpdateAccessTokenPath,
-  zUpdateAccessTokenResponse2,
+  zUpdateAccessTokenResponse,
   zUpdateProjectBody,
   zUpdateProjectPath,
   zUpdateProjectResponse2,
@@ -272,7 +272,7 @@ export const updateAccessToken = <ThrowOnError extends boolean = false>(
         })
         .parseAsync(data),
     responseValidator: async data =>
-      await zUpdateAccessTokenResponse2.parseAsync(data),
+      await zUpdateAccessTokenResponse.parseAsync(data),
     url: '/api/project/{projectId}/access-token',
     ...options,
     headers: {
@@ -600,7 +600,7 @@ export const renameTranslationKey = <ThrowOnError extends boolean = false>(
   RenameTranslationKeyErrors,
   ThrowOnError
 > =>
-  (options.client ?? client).put<
+  (options.client ?? client).patch<
     RenameTranslationKeyResponses,
     RenameTranslationKeyErrors,
     ThrowOnError
@@ -748,6 +748,36 @@ export const getLocales = <ThrowOnError extends boolean = false>(
     ...options,
   });
 
+export const updateReferenceLocale = <ThrowOnError extends boolean = false>(
+  options: Options<UpdateReferenceLocaleData, ThrowOnError>
+): RequestResult<
+  UpdateReferenceLocaleResponses,
+  UpdateReferenceLocaleErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    UpdateReferenceLocaleResponses,
+    UpdateReferenceLocaleErrors,
+    ThrowOnError
+  >({
+    requestValidator: async data =>
+      await z
+        .object({
+          body: zUpdateReferenceLocaleBody,
+          path: z.never().optional(),
+          query: z.never().optional(),
+        })
+        .parseAsync(data),
+    responseValidator: async data =>
+      await zUpdateReferenceLocaleResponse.parseAsync(data),
+    url: '/api/translations/locales',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+
 export const addLocale = <ThrowOnError extends boolean = false>(
   options: Options<AddLocaleData, ThrowOnError>
 ): RequestResult<AddLocaleResponses, AddLocaleErrors, ThrowOnError> =>
@@ -765,36 +795,6 @@ export const addLocale = <ThrowOnError extends boolean = false>(
         })
         .parseAsync(data),
     responseValidator: async data => await zAddLocaleResponse.parseAsync(data),
-    url: '/api/translations/locales',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
-
-export const updateReferenceLocale = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateReferenceLocaleData, ThrowOnError>
-): RequestResult<
-  UpdateReferenceLocaleResponses,
-  UpdateReferenceLocaleErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).put<
-    UpdateReferenceLocaleResponses,
-    UpdateReferenceLocaleErrors,
-    ThrowOnError
-  >({
-    requestValidator: async data =>
-      await z
-        .object({
-          body: zUpdateReferenceLocaleBody,
-          path: z.never().optional(),
-          query: z.never().optional(),
-        })
-        .parseAsync(data),
-    responseValidator: async data =>
-      await zUpdateReferenceLocaleResponse.parseAsync(data),
     url: '/api/translations/locales',
     ...options,
     headers: {

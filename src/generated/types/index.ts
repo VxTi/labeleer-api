@@ -4,40 +4,207 @@ export type ClientOptions = {
   baseUrl: `${string}://${string}` | (string & {});
 };
 
+export type Booleanish = boolean;
+
+export type Collaborator = {
+  id: string;
+  name: string;
+  email: string;
+  /**
+   * Thumbnail URL of the user
+   */
+  thumbnail_url?: string;
+  role: Role;
+};
+
+export type Comment = {
+  id: string;
+  key_id: string;
+  project_id: string;
+  created_on: Timestamp;
+  edited_on?: Timestamp;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    thumbnail_url?: string;
+  };
+  content: string;
+};
+
+export type CreateAccessTokenRequestBody = {
+  permissions: ProjectPermissions;
+};
+
+export type CreateAccessTokenResponse = {
+  key: string;
+  details: ProjectApiKeyDetails;
+};
+
+export type CreateCommentRequestBody = {
+  projectId: string;
+  keyId: string;
+  comment: string;
+  commentId: string;
+};
+
+export type CreateLocaleRequestBody = {
+  projectId: string;
+  locale: Locale;
+};
+
+export type CreateLocaleResponse = {
+  data: Array<LanguageItem>;
+};
+
+export type CreateProjectRequestBody = {
+  name: string;
+  description?: string;
+  locales?: Array<Locale>;
+};
+
+export type CreateProjectResponse = {
+  data: Project;
+};
+
+export type DeleteCommentRequestQuery = {
+  commentId: string;
+  projectId: string;
+};
+
+export type DeleteLocaleRequestBody = {
+  projectId: string;
+  locale: Locale;
+};
+
+export type DeleteTranslationRequestQuery = {
+  projectId: string;
+  keyId: string;
+};
+
+export type DeleteTranslationsRequestBody = {
+  projectId: string;
+  keys: Array<string>;
+};
+
 export type ErrorResponse = {
   error: string;
   details?: string;
 };
 
-export type SuccessResponse = {
-  success: boolean;
+export type ExtendedTranslationItem = {
+  key: string;
+  key_id: string;
+  translations: {
+    [key in Locale]?: string;
+  };
+  plurals: {
+    [key in Locale]?: {
+      [key in Plurality]?: string;
+    };
+  };
+  comment_count: number;
+  description?: string | null;
+  tags: TranslationTags;
+  created_at: Timestamp;
+  updated_at?: Timestamp;
+  created_by?: {
+    id: string;
+    name: string;
+    email: string;
+    thumbnail?: string;
+  };
 };
 
-export const enum PermissionCategory {
-  TRANSLATIONS = 'translations',
-  LANGUAGES = 'languages',
-  COLLABORATORS = 'collaborators',
-  PROJECT = 'project',
-}
-
-export const enum PermissionRole {
-  VIEWER = 'viewer',
-  EDITOR = 'editor',
-}
-
-export type ProjectPermissions = {
-  [key in PermissionCategory]?: PermissionRole;
+export type GenerateTranslationsRequestQuery = {
+  project_id: string;
+  key: string;
+  from_locale: Locale;
+  to_locale: Locale;
 };
 
-export const enum Role {
-  OWNER = 'owner',
-  COLLABORATOR = 'collaborator',
-}
+export type GetCommentsRequestQuery = {
+  projectId: string;
+  keyId: string;
+};
 
-export const enum ProjectFeature {
-  AUTO_TRANSLATE = 'auto-translate',
-  SUGGESTIONS = 'suggestions',
-}
+export type GetCommentsResponse = {
+  data: Array<Comment>;
+};
+
+export type GetInvitationsResponse = {
+  data: Array<Invitation>;
+};
+
+export type GetLocaleResponse = {
+  data: Array<LanguageItem>;
+};
+
+export type GetLocalesRequestQuery = {
+  projectId: string;
+};
+
+export type GetProjectsResponse = {
+  data: Array<Project>;
+};
+
+export type GetTranslationDataResponse = {
+  data: ExtendedTranslationItem;
+};
+
+export type GetTranslationRequestQuery = {
+  projectId: string;
+  keyId: string;
+};
+
+export type GetTranslationsResponse = {
+  data: Array<TranslationItem>;
+  pagination: Pagination;
+};
+
+export type GetTranslationTagsRequestQuery = {
+  projectId: string;
+  keyId: string;
+};
+
+export type GetTranslationTagsResponse = {
+  data: TranslationTags;
+};
+
+export type GetUserPermissionsResponse = {
+  data: ProjectPermissions;
+};
+
+export type Invitation = {
+  id: string;
+  role: Role;
+  invited_on: Timestamp;
+  project: InvitationProject;
+  invited_by: InvitedBy;
+};
+
+export type InvitationProject = {
+  id: string;
+  name: string;
+  description?: string;
+};
+
+export type InvitedBy = {
+  user_id: string;
+  name: string;
+  thumbnail_url?: string;
+  email: string;
+};
+
+export type InviteUserRequestBody = {
+  email: string;
+};
+
+export type LanguageItem = {
+  id: string;
+  locale: Locale;
+  is_reference: boolean;
+};
 
 export const enum Locale {
   AF_ZA = 'af_ZA',
@@ -188,7 +355,36 @@ export const enum Locale {
   TR_TR = 'tr_TR',
 }
 
-export type Timestamp = string;
+export type Pagination = {
+  /**
+   * Page offset
+   */
+  offset: number;
+  /**
+   * Amount of entries contained within this page
+   */
+  count: number;
+  /**
+   * Total amount of items in all pages
+   */
+  total_count: number;
+  /**
+   * Whether this is the last page in pagination
+   */
+  has_next: boolean;
+};
+
+export const enum PermissionCategory {
+  TRANSLATIONS = 'translations',
+  LANGUAGES = 'languages',
+  COLLABORATORS = 'collaborators',
+  PROJECT = 'project',
+}
+
+export const enum PermissionRole {
+  VIEWER = 'viewer',
+  EDITOR = 'editor',
+}
 
 export const enum Plurality {
   ZERO = 'zero',
@@ -198,27 +394,6 @@ export const enum Plurality {
   MANY = 'many',
   OTHER = 'other',
 }
-
-export type Pagination = {
-  offset: number;
-  count: number;
-  totalCount: number;
-};
-
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  thumbnail_url?: string;
-};
-
-export type Collaborator = {
-  id: string;
-  name: string;
-  email: string;
-  thumbnail_url?: string;
-  role: Role;
-};
 
 export type Project = {
   id: string;
@@ -232,68 +407,37 @@ export type Project = {
   users: Array<Collaborator>;
 };
 
-export type InvitationProject = {
+export type ProjectApiKeyDetails = {
   id: string;
-  name: string;
-  description?: string;
+  name?: string;
+  start: string;
+  enabled: boolean;
+  permissions: ProjectPermissions;
+  created_on: Timestamp;
+  last_request?: Timestamp;
+  request_count: number;
+  expires_on?: Timestamp;
 };
 
-export type InvitedBy = {
-  user_id: string;
-  name: string;
-  thumbnail_url?: string;
-  email: string;
+export const enum ProjectFeature {
+  AUTO_TRANSLATE = 'auto-translate',
+  SUGGESTIONS = 'suggestions',
+}
+
+export type ProjectPermissions = {
+  [key in PermissionCategory]?: PermissionRole;
 };
 
-export type Invitation = {
-  id: string;
-  role: Role;
-  invited_on: Timestamp;
-  project: InvitationProject;
-  invited_by: InvitedBy;
+export const enum Role {
+  OWNER = 'owner',
+  COLLABORATOR = 'collaborator',
+}
+
+export type SuccessResponse = {
+  success: boolean;
 };
 
-export type TranslationTags = Array<string>;
-
-export type TranslationItem = {
-  key: string;
-  key_id: string;
-  translations: {
-    [key in Locale]?: string;
-  };
-  plurals: {
-    [key in Locale]?: {
-      [key in Plurality]?: string;
-    };
-  };
-  comment_count: number;
-  description?: string;
-  tags: TranslationTags;
-};
-
-export type ExtendedTranslationItem = {
-  key: string;
-  key_id: string;
-  translations: {
-    [key in Locale]?: string;
-  };
-  plurals: {
-    [key in Locale]?: {
-      [key in Plurality]?: string;
-    };
-  };
-  comment_count: number;
-  description?: string;
-  tags: TranslationTags;
-  created_at: Timestamp;
-  updated_at?: Timestamp;
-  created_by?: {
-    id: string;
-    name: string;
-    email: string;
-    thumbnail?: string;
-  };
-};
+export type Timestamp = string;
 
 export type TranslationExportItem = {
   key: string;
@@ -309,107 +453,20 @@ export type TranslationExportItem = {
   };
 };
 
-export type LanguageItem = {
-  id: string;
-  locale: Locale;
-  is_reference: boolean;
-};
-
-export type Comment = {
-  id: string;
-  key_id: string;
-  project_id: string;
-  created_on: Timestamp;
-  edited_on?: Timestamp;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    thumbnail_url?: string;
-  };
-  content: string;
-};
-
-export type ProjectApiKeyDetails = {
-  id: string;
-  name?: string;
-  start: string;
-  enabled: boolean;
-  permissions: ProjectPermissions;
-  created_on: Timestamp;
-  last_request?: Timestamp;
-  request_count: number;
-  expires_on?: Timestamp;
-};
-
-export type Booleanish = boolean;
-
-export type GetInvitationsResponse = {
-  data: Array<Invitation>;
-};
-
-export type CreateAccessTokenResponse = {
+export type TranslationItem = {
   key: string;
-  details: ProjectApiKeyDetails;
-};
-
-export type UpdateAccessTokenResponse = {
-  details: ProjectApiKeyDetails;
-};
-
-export type UpdateProjectResponse = {
-  name: string;
-  description?: string;
-};
-
-export type GetUserPermissionsResponse = {
-  data: ProjectPermissions;
-};
-
-export type UpdateUserPermissionsRequestBody = {
-  permissions: {
-    translations?: 'viewer' | 'editor';
-    languages?: 'viewer' | 'editor';
-    collaborators?: 'viewer' | 'editor';
-    project?: 'viewer' | 'editor';
+  key_id: string;
+  translations: {
+    [key in Locale]?: string;
   };
-};
-
-export type CreateProjectRequest = {
-  name: string;
-  description?: string;
-  locales?: Array<Locale>;
-};
-
-export type CreateProjectResponse = {
-  data: Project;
-};
-
-export type GetProjectsResponse = {
-  data: Array<Project>;
-};
-
-export type GetTranslationDataResponse = {
-  data: ExtendedTranslationItem;
-};
-
-export type GetTranslationTagsRequest = {
-  projectId: string;
-  keyId: string;
-};
-
-export type GetTranslationTagsResponse = {
-  data: TranslationTags;
-};
-
-export type UpdateTranslationTagsRequestBody = {
-  projectId: string;
-  keyId: string;
-  tags: Array<string>;
-};
-
-export type UpdateTranslationTagsResponse = {
-  data: TranslationTags;
+  plurals: {
+    [key in Locale]?: {
+      [key in Plurality]?: string;
+    };
+  };
+  comment_count: number;
+  description?: string | null;
+  tags: TranslationTags;
 };
 
 export type TranslationsExportRequestQuery = {
@@ -429,17 +486,24 @@ export type TranslationsExportRequestQuery = {
   include_description?: Booleanish;
 };
 
-export type GetLocaleResponse = {
-  data: Array<LanguageItem>;
+export type TranslationTags = Array<string>;
+
+export type UpdateAccessTokenPermissionsRequestBody = {
+  permissions: ProjectPermissions;
 };
 
-export type CreateLocaleRequestBody = {
-  projectId: string;
-  locale: Locale;
+export type UpdateAccessTokenPermissionsResponse = {
+  details: ProjectApiKeyDetails;
 };
 
-export type CreateLocaleResponse = {
-  data: Array<LanguageItem>;
+export type UpdateInvitationStatusRequestBody = {
+  invitationId: string;
+  status: 'accepted' | 'declined';
+};
+
+export type UpdateProjectResponse = {
+  name: string;
+  description?: string;
 };
 
 export type UpdateReferenceLocaleRequestBody = {
@@ -447,9 +511,10 @@ export type UpdateReferenceLocaleRequestBody = {
   locale: Locale;
 };
 
-export type GetTranslationsResponse = {
-  data: Array<TranslationItem>;
-  pagination: Pagination;
+export type UpdateTranslationRequestBody = {
+  projectId: string;
+  keyId: string;
+  newKeyName: string;
 };
 
 export type UpdateTranslationsRequestBody = {
@@ -470,9 +535,28 @@ export type UpdateTranslationsRequestBody = {
   };
 };
 
-export type DeleteTranslationsRequestBody = {
+export type UpdateTranslationTagsRequestBody = {
   projectId: string;
-  keys: Array<string>;
+  keyId: string;
+  tags: Array<string>;
+};
+
+export type UpdateTranslationTagsResponse = {
+  data: TranslationTags;
+};
+
+export type UpdateUserPermissionsRequestBody = {
+  permissions: ProjectPermissions;
+};
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  /**
+   * Thumbnail URL of the user
+   */
+  thumbnail_url?: string;
 };
 
 export type GetInvitationsData = {
@@ -507,10 +591,7 @@ export type GetInvitationsResponse2 =
   GetInvitationsResponses[keyof GetInvitationsResponses];
 
 export type RespondToInvitationData = {
-  body: {
-    invitationId: string;
-    status: 'accepted' | 'declined';
-  };
+  body: UpdateInvitationStatusRequestBody;
   path?: never;
   query?: never;
   url: '/api/invitations';
@@ -590,14 +671,7 @@ export type RevokeAccessTokenResponse =
   RevokeAccessTokenResponses[keyof RevokeAccessTokenResponses];
 
 export type UpdateAccessTokenData = {
-  body: {
-    permissions: {
-      translations?: 'viewer' | 'editor';
-      languages?: 'viewer' | 'editor';
-      collaborators?: 'viewer' | 'editor';
-      project?: 'viewer' | 'editor';
-    };
-  };
+  body: UpdateAccessTokenPermissionsRequestBody;
   path: {
     projectId: string;
   };
@@ -635,21 +709,14 @@ export type UpdateAccessTokenResponses = {
   /**
    * Ok
    */
-  200: UpdateAccessTokenResponse;
+  200: UpdateAccessTokenPermissionsResponse;
 };
 
-export type UpdateAccessTokenResponse2 =
+export type UpdateAccessTokenResponse =
   UpdateAccessTokenResponses[keyof UpdateAccessTokenResponses];
 
 export type CreateAccessTokenData = {
-  body: {
-    permissions: {
-      translations?: 'viewer' | 'editor';
-      languages?: 'viewer' | 'editor';
-      collaborators?: 'viewer' | 'editor';
-      project?: 'viewer' | 'editor';
-    };
-  };
+  body: CreateAccessTokenRequestBody;
   path: {
     projectId: string;
   };
@@ -690,9 +757,7 @@ export type CreateAccessTokenResponse2 =
   CreateAccessTokenResponses[keyof CreateAccessTokenResponses];
 
 export type InviteUserToProjectData = {
-  body: {
-    email: string;
-  };
+  body: InviteUserRequestBody;
   path: {
     projectId: string;
   };
@@ -724,9 +789,9 @@ export type InviteUserToProjectError =
 
 export type InviteUserToProjectResponses = {
   /**
-   * Resource Created
+   * Ok
    */
-  201: SuccessResponse;
+  200: SuccessResponse;
 };
 
 export type InviteUserToProjectResponse =
@@ -973,7 +1038,7 @@ export type GetProjectsResponse2 =
   GetProjectsResponses[keyof GetProjectsResponses];
 
 export type CreateProjectData = {
-  body: CreateProjectRequest;
+  body: CreateProjectRequestBody;
   path?: never;
   query?: never;
   url: '/api/project';
@@ -1147,11 +1212,7 @@ export type GetTranslationResponse =
   GetTranslationResponses[keyof GetTranslationResponses];
 
 export type RenameTranslationKeyData = {
-  body: {
-    projectId: string;
-    keyId: string;
-    newKeyName: string;
-  };
+  body: UpdateTranslationRequestBody;
   path?: never;
   query?: never;
   url: '/api/translation';
@@ -1408,43 +1469,6 @@ export type GetLocalesResponses = {
 
 export type GetLocalesResponse = GetLocalesResponses[keyof GetLocalesResponses];
 
-export type AddLocaleData = {
-  body: CreateLocaleRequestBody;
-  path?: never;
-  query?: never;
-  url: '/api/translations/locales';
-};
-
-export type AddLocaleErrors = {
-  /**
-   * Bad Request
-   */
-  400: ErrorResponse;
-  /**
-   * Unauthorized
-   */
-  401: ErrorResponse;
-  /**
-   * Forbidden
-   */
-  403: ErrorResponse;
-  /**
-   * Internal Server Error
-   */
-  500: ErrorResponse;
-};
-
-export type AddLocaleError = AddLocaleErrors[keyof AddLocaleErrors];
-
-export type AddLocaleResponses = {
-  /**
-   * Resource Created
-   */
-  201: CreateLocaleResponse;
-};
-
-export type AddLocaleResponse = AddLocaleResponses[keyof AddLocaleResponses];
-
 export type UpdateReferenceLocaleData = {
   body: UpdateReferenceLocaleRequestBody;
   path?: never;
@@ -1483,6 +1507,43 @@ export type UpdateReferenceLocaleResponses = {
 
 export type UpdateReferenceLocaleResponse =
   UpdateReferenceLocaleResponses[keyof UpdateReferenceLocaleResponses];
+
+export type AddLocaleData = {
+  body: CreateLocaleRequestBody;
+  path?: never;
+  query?: never;
+  url: '/api/translations/locales';
+};
+
+export type AddLocaleErrors = {
+  /**
+   * Bad Request
+   */
+  400: ErrorResponse;
+  /**
+   * Unauthorized
+   */
+  401: ErrorResponse;
+  /**
+   * Forbidden
+   */
+  403: ErrorResponse;
+  /**
+   * Internal Server Error
+   */
+  500: ErrorResponse;
+};
+
+export type AddLocaleError = AddLocaleErrors[keyof AddLocaleErrors];
+
+export type AddLocaleResponses = {
+  /**
+   * Resource Created
+   */
+  201: CreateLocaleResponse;
+};
+
+export type AddLocaleResponse = AddLocaleResponses[keyof AddLocaleResponses];
 
 export type DeleteTranslationsData = {
   body: DeleteTranslationsRequestBody;

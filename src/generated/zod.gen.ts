@@ -2,29 +2,74 @@
 
 import * as z from 'zod';
 
+export const zBooleanish = z.boolean().default(false);
+
+export const zCreateCommentRequestBody = z.object({
+  projectId: z.string(),
+  keyId: z.string(),
+  comment: z.string().min(1).max(1024),
+  commentId: z.string(),
+});
+
+export const zDeleteCommentRequestQuery = z.object({
+  commentId: z.string(),
+  projectId: z.string(),
+});
+
+export const zDeleteTranslationRequestQuery = z.object({
+  projectId: z.string(),
+  keyId: z.string(),
+});
+
+export const zDeleteTranslationsRequestBody = z.object({
+  projectId: z.string(),
+  keys: z.array(z.string()).min(1),
+});
+
 export const zErrorResponse = z.object({
   error: z.string(),
   details: z.string().optional(),
 });
 
-export const zSuccessResponse = z.object({
-  success: z.boolean(),
+export const zGetCommentsRequestQuery = z.object({
+  projectId: z.string(),
+  keyId: z.string(),
 });
 
-export const zPermissionCategory = z.enum([
-  'translations',
-  'languages',
-  'collaborators',
-  'project',
-]);
+export const zGetLocalesRequestQuery = z.object({
+  projectId: z.string(),
+});
 
-export const zPermissionRole = z.enum(['viewer', 'editor']);
+export const zGetTranslationRequestQuery = z.object({
+  projectId: z.string(),
+  keyId: z.string(),
+});
 
-export const zProjectPermissions = z.record(z.string(), zPermissionRole);
+export const zGetTranslationTagsRequestQuery = z.object({
+  projectId: z.string(),
+  keyId: z.string(),
+});
 
-export const zRole = z.enum(['owner', 'collaborator']);
+export const zInvitationProject = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().optional(),
+});
 
-export const zProjectFeature = z.enum(['auto-translate', 'suggestions']);
+export const zInvitedBy = z.object({
+  user_id: z.string(),
+  name: z.string(),
+  thumbnail_url: z.string().optional(),
+  email: z.string(),
+});
+
+export const zInviteUserRequestBody = z.object({
+  email: z
+    .email()
+    .regex(
+      /^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/
+    ),
+});
 
 export const zLocale = z.enum([
   'af_ZA',
@@ -175,11 +220,58 @@ export const zLocale = z.enum([
   'tr_TR',
 ]);
 
-export const zTimestamp = z.iso
-  .datetime()
-  .regex(
-    /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/
-  );
+export const zCreateLocaleRequestBody = z.object({
+  projectId: z.string(),
+  locale: zLocale,
+});
+
+export const zCreateProjectRequestBody = z.object({
+  name: z.string().min(1).max(50),
+  description: z.string().max(200).optional(),
+  locales: z.array(zLocale).optional(),
+});
+
+export const zDeleteLocaleRequestBody = z.object({
+  projectId: z.string(),
+  locale: zLocale,
+});
+
+export const zGenerateTranslationsRequestQuery = z.object({
+  project_id: z.string(),
+  key: z.string(),
+  from_locale: zLocale,
+  to_locale: zLocale,
+});
+
+export const zLanguageItem = z.object({
+  id: z.string(),
+  locale: zLocale,
+  is_reference: z.boolean(),
+});
+
+export const zCreateLocaleResponse = z.object({
+  data: z.array(zLanguageItem),
+});
+
+export const zGetLocaleResponse = z.object({
+  data: z.array(zLanguageItem),
+});
+
+export const zPagination = z.object({
+  offset: z.number(),
+  count: z.number(),
+  total_count: z.number(),
+  has_next: z.boolean(),
+});
+
+export const zPermissionCategory = z.enum([
+  'translations',
+  'languages',
+  'collaborators',
+  'project',
+]);
+
+export const zPermissionRole = z.enum(['viewer', 'editor']);
 
 export const zPlurality = z.enum([
   'zero',
@@ -190,18 +282,19 @@ export const zPlurality = z.enum([
   'other',
 ]);
 
-export const zPagination = z.object({
-  offset: z.number(),
-  count: z.number(),
-  totalCount: z.number(),
+export const zProjectFeature = z.enum(['auto-translate', 'suggestions']);
+
+export const zProjectPermissions = z.record(z.string(), zPermissionRole);
+
+export const zCreateAccessTokenRequestBody = z.object({
+  permissions: zProjectPermissions,
 });
 
-export const zUser = z.object({
-  id: z.string(),
-  name: z.string(),
-  email: z.string(),
-  thumbnail_url: z.url().optional(),
+export const zGetUserPermissionsResponse = z.object({
+  data: zProjectPermissions,
 });
+
+export const zRole = z.enum(['owner', 'collaborator']);
 
 export const zCollaborator = z.object({
   id: z.string(),
@@ -211,84 +304,15 @@ export const zCollaborator = z.object({
   role: zRole,
 });
 
-export const zProject = z.object({
-  id: z.string(),
-  description: z.string().optional(),
-  name: z.string(),
-  created_on: zTimestamp,
-  features: z.array(zProjectFeature),
-  updated_on: zTimestamp.optional(),
-  owner_user_id: z.string(),
-  created_by: zCollaborator,
-  users: z.array(zCollaborator),
+export const zSuccessResponse = z.object({
+  success: z.boolean(),
 });
 
-export const zInvitationProject = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string().optional(),
-});
-
-export const zInvitedBy = z.object({
-  user_id: z.string(),
-  name: z.string(),
-  thumbnail_url: z.string().optional(),
-  email: z.string(),
-});
-
-export const zInvitation = z.object({
-  id: z.string(),
-  role: zRole,
-  invited_on: zTimestamp,
-  project: zInvitationProject,
-  invited_by: zInvitedBy,
-});
-
-export const zTranslationTags = z.array(z.string());
-
-export const zTranslationItem = z.object({
-  key: z.string(),
-  key_id: z.string(),
-  translations: z.record(z.string(), z.string()),
-  plurals: z.record(z.string(), z.record(z.string(), z.string())),
-  comment_count: z.number(),
-  description: z.string().optional(),
-  tags: zTranslationTags,
-});
-
-export const zExtendedTranslationItem = z.object({
-  key: z.string(),
-  key_id: z.string(),
-  translations: z.record(z.string(), z.string()),
-  plurals: z.record(z.string(), z.record(z.string(), z.string())),
-  comment_count: z.number(),
-  description: z.string().optional(),
-  tags: zTranslationTags,
-  created_at: zTimestamp,
-  updated_at: zTimestamp.optional(),
-  created_by: z
-    .object({
-      id: z.string(),
-      name: z.string(),
-      email: z.string(),
-      thumbnail: z.string().optional(),
-    })
-    .optional(),
-});
-
-export const zTranslationExportItem = z.object({
-  key: z.string(),
-  tags: zTranslationTags,
-  description: z.string().optional(),
-  translations: z.record(z.string(), z.string()),
-  plurals: z.record(z.string(), z.record(z.string(), z.string())),
-});
-
-export const zLanguageItem = z.object({
-  id: z.string(),
-  locale: zLocale,
-  is_reference: z.boolean(),
-});
+export const zTimestamp = z.iso
+  .datetime()
+  .regex(
+    /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/
+  );
 
 export const zComment = z.object({
   id: z.string(),
@@ -305,6 +329,42 @@ export const zComment = z.object({
   content: z.string(),
 });
 
+export const zGetCommentsResponse = z.object({
+  data: z.array(zComment),
+});
+
+export const zInvitation = z.object({
+  id: z.string(),
+  role: zRole,
+  invited_on: zTimestamp,
+  project: zInvitationProject,
+  invited_by: zInvitedBy,
+});
+
+export const zGetInvitationsResponse = z.object({
+  data: z.array(zInvitation),
+});
+
+export const zProject = z.object({
+  id: z.string(),
+  description: z.string().optional(),
+  name: z.string(),
+  created_on: zTimestamp,
+  features: z.array(zProjectFeature),
+  updated_on: zTimestamp.optional(),
+  owner_user_id: z.string(),
+  created_by: zCollaborator,
+  users: z.array(zCollaborator),
+});
+
+export const zCreateProjectResponse = z.object({
+  data: zProject,
+});
+
+export const zGetProjectsResponse = z.object({
+  data: z.array(zProject),
+});
+
 export const zProjectApiKeyDetails = z.object({
   id: z.string(),
   name: z.string().optional(),
@@ -317,74 +377,9 @@ export const zProjectApiKeyDetails = z.object({
   expires_on: zTimestamp.optional(),
 });
 
-export const zBooleanish = z.boolean().default(false);
-
-export const zGetInvitationsResponse = z.object({
-  data: z.array(zInvitation),
-});
-
 export const zCreateAccessTokenResponse = z.object({
   key: z.string(),
   details: zProjectApiKeyDetails,
-});
-
-export const zUpdateAccessTokenResponse = z.object({
-  details: zProjectApiKeyDetails,
-});
-
-export const zUpdateProjectResponse = z.object({
-  name: z.string().min(3).max(50),
-  description: z.string().max(500).optional(),
-});
-
-export const zGetUserPermissionsResponse = z.object({
-  data: zProjectPermissions,
-});
-
-export const zUpdateUserPermissionsRequestBody = z.object({
-  permissions: z.object({
-    translations: z.enum(['viewer', 'editor']).optional(),
-    languages: z.enum(['viewer', 'editor']).optional(),
-    collaborators: z.enum(['viewer', 'editor']).optional(),
-    project: z.enum(['viewer', 'editor']).optional(),
-  }),
-});
-
-export const zCreateProjectRequest = z.object({
-  name: z.string().min(1).max(50),
-  description: z.string().max(500).optional(),
-  locales: z.array(zLocale).optional(),
-});
-
-export const zCreateProjectResponse = z.object({
-  data: zProject,
-});
-
-export const zGetProjectsResponse = z.object({
-  data: z.array(zProject),
-});
-
-export const zGetTranslationDataResponse = z.object({
-  data: zExtendedTranslationItem,
-});
-
-export const zGetTranslationTagsRequest = z.object({
-  projectId: z.string(),
-  keyId: z.string(),
-});
-
-export const zGetTranslationTagsResponse = z.object({
-  data: zTranslationTags,
-});
-
-export const zUpdateTranslationTagsRequestBody = z.object({
-  projectId: z.string(),
-  keyId: z.string(),
-  tags: z.array(z.string().max(32)).min(1),
-});
-
-export const zUpdateTranslationTagsResponse = z.object({
-  data: zTranslationTags,
 });
 
 export const zTranslationsExportRequestQuery = z.object({
@@ -405,17 +400,75 @@ export const zTranslationsExportRequestQuery = z.object({
   include_description: zBooleanish.optional(),
 });
 
-export const zGetLocaleResponse = z.object({
-  data: z.array(zLanguageItem),
+export const zTranslationTags = z.array(z.string());
+
+export const zExtendedTranslationItem = z.object({
+  key: z.string(),
+  key_id: z.string(),
+  translations: z.record(z.string(), z.string()),
+  plurals: z.record(z.string(), z.record(z.string(), z.string())),
+  comment_count: z.number(),
+  description: z.string().nullish(),
+  tags: zTranslationTags,
+  created_at: zTimestamp,
+  updated_at: zTimestamp.optional(),
+  created_by: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      email: z.string(),
+      thumbnail: z.string().optional(),
+    })
+    .optional(),
 });
 
-export const zCreateLocaleRequestBody = z.object({
-  projectId: z.string(),
-  locale: zLocale,
+export const zGetTranslationDataResponse = z.object({
+  data: zExtendedTranslationItem,
 });
 
-export const zCreateLocaleResponse = z.object({
-  data: z.array(zLanguageItem),
+export const zGetTranslationTagsResponse = z.object({
+  data: zTranslationTags,
+});
+
+export const zTranslationExportItem = z.object({
+  key: z.string(),
+  tags: zTranslationTags,
+  description: z.string().optional(),
+  translations: z.record(z.string(), z.string()),
+  plurals: z.record(z.string(), z.record(z.string(), z.string())),
+});
+
+export const zTranslationItem = z.object({
+  key: z.string(),
+  key_id: z.string(),
+  translations: z.record(z.string(), z.string()),
+  plurals: z.record(z.string(), z.record(z.string(), z.string())),
+  comment_count: z.number(),
+  description: z.string().nullish(),
+  tags: zTranslationTags,
+});
+
+export const zGetTranslationsResponse = z.object({
+  data: z.array(zTranslationItem),
+  pagination: zPagination,
+});
+
+export const zUpdateAccessTokenPermissionsRequestBody = z.object({
+  permissions: zProjectPermissions,
+});
+
+export const zUpdateAccessTokenPermissionsResponse = z.object({
+  details: zProjectApiKeyDetails,
+});
+
+export const zUpdateInvitationStatusRequestBody = z.object({
+  invitationId: z.string(),
+  status: z.enum(['accepted', 'declined']),
+});
+
+export const zUpdateProjectResponse = z.object({
+  name: z.string().min(3).max(50),
+  description: z.string().max(200).optional(),
 });
 
 export const zUpdateReferenceLocaleRequestBody = z.object({
@@ -423,9 +476,10 @@ export const zUpdateReferenceLocaleRequestBody = z.object({
   locale: zLocale,
 });
 
-export const zGetTranslationsResponse = z.object({
-  data: z.array(zTranslationItem),
-  pagination: zPagination,
+export const zUpdateTranslationRequestBody = z.object({
+  projectId: z.string(),
+  keyId: z.string(),
+  newKeyName: z.string().min(4).max(512),
 });
 
 export const zUpdateTranslationsRequestBody = z.object({
@@ -443,9 +497,25 @@ export const zUpdateTranslationsRequestBody = z.object({
   ),
 });
 
-export const zDeleteTranslationsRequestBody = z.object({
+export const zUpdateTranslationTagsRequestBody = z.object({
   projectId: z.string(),
-  keys: z.array(z.string()).min(1),
+  keyId: z.string(),
+  tags: z.array(z.string().max(32)).min(1),
+});
+
+export const zUpdateTranslationTagsResponse = z.object({
+  data: zTranslationTags,
+});
+
+export const zUpdateUserPermissionsRequestBody = z.object({
+  permissions: zProjectPermissions,
+});
+
+export const zUser = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  thumbnail_url: z.url().optional(),
 });
 
 /**
@@ -453,10 +523,7 @@ export const zDeleteTranslationsRequestBody = z.object({
  */
 export const zGetInvitationsResponse2 = zGetInvitationsResponse;
 
-export const zRespondToInvitationBody = z.object({
-  invitationId: z.string(),
-  status: z.enum(['accepted', 'declined']),
-});
+export const zRespondToInvitationBody = zUpdateInvitationStatusRequestBody;
 
 /**
  * Resource Created
@@ -472,14 +539,7 @@ export const zRevokeAccessTokenPath = z.object({
  */
 export const zRevokeAccessTokenResponse = zSuccessResponse;
 
-export const zUpdateAccessTokenBody = z.object({
-  permissions: z.object({
-    translations: z.enum(['viewer', 'editor']).optional(),
-    languages: z.enum(['viewer', 'editor']).optional(),
-    collaborators: z.enum(['viewer', 'editor']).optional(),
-    project: z.enum(['viewer', 'editor']).optional(),
-  }),
-});
+export const zUpdateAccessTokenBody = zUpdateAccessTokenPermissionsRequestBody;
 
 export const zUpdateAccessTokenPath = z.object({
   projectId: z.string(),
@@ -488,16 +548,9 @@ export const zUpdateAccessTokenPath = z.object({
 /**
  * Ok
  */
-export const zUpdateAccessTokenResponse2 = zUpdateAccessTokenResponse;
+export const zUpdateAccessTokenResponse = zUpdateAccessTokenPermissionsResponse;
 
-export const zCreateAccessTokenBody = z.object({
-  permissions: z.object({
-    translations: z.enum(['viewer', 'editor']).optional(),
-    languages: z.enum(['viewer', 'editor']).optional(),
-    collaborators: z.enum(['viewer', 'editor']).optional(),
-    project: z.enum(['viewer', 'editor']).optional(),
-  }),
-});
+export const zCreateAccessTokenBody = zCreateAccessTokenRequestBody;
 
 export const zCreateAccessTokenPath = z.object({
   projectId: z.string(),
@@ -508,20 +561,14 @@ export const zCreateAccessTokenPath = z.object({
  */
 export const zCreateAccessTokenResponse2 = zCreateAccessTokenResponse;
 
-export const zInviteUserToProjectBody = z.object({
-  email: z
-    .email()
-    .regex(
-      /^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/
-    ),
-});
+export const zInviteUserToProjectBody = zInviteUserRequestBody;
 
 export const zInviteUserToProjectPath = z.object({
   projectId: z.string(),
 });
 
 /**
- * Resource Created
+ * Ok
  */
 export const zInviteUserToProjectResponse = zSuccessResponse;
 
@@ -582,7 +629,7 @@ export const zUpdateUserPermissionsResponse = zSuccessResponse;
  */
 export const zGetProjectsResponse2 = zGetProjectsResponse;
 
-export const zCreateProjectBody = zCreateProjectRequest;
+export const zCreateProjectBody = zCreateProjectRequestBody;
 
 /**
  * Resource Created
@@ -621,11 +668,7 @@ export const zGetTranslationQuery = z.object({
  */
 export const zGetTranslationResponse = zGetTranslationDataResponse;
 
-export const zRenameTranslationKeyBody = z.object({
-  projectId: z.string(),
-  keyId: z.string(),
-  newKeyName: z.string().min(4).max(512),
-});
+export const zRenameTranslationKeyBody = zUpdateTranslationRequestBody;
 
 /**
  * Ok
@@ -688,19 +731,19 @@ export const zGetLocalesQuery = z.object({
  */
 export const zGetLocalesResponse = zGetLocaleResponse;
 
-export const zAddLocaleBody = zCreateLocaleRequestBody;
-
-/**
- * Resource Created
- */
-export const zAddLocaleResponse = zCreateLocaleResponse;
-
 export const zUpdateReferenceLocaleBody = zUpdateReferenceLocaleRequestBody;
 
 /**
  * Ok
  */
 export const zUpdateReferenceLocaleResponse = zSuccessResponse;
+
+export const zAddLocaleBody = zCreateLocaleRequestBody;
+
+/**
+ * Resource Created
+ */
+export const zAddLocaleResponse = zCreateLocaleResponse;
 
 export const zDeleteTranslationsBody = zDeleteTranslationsRequestBody;
 

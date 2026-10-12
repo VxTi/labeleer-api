@@ -32,18 +32,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                invitationId:
-                  type: string
-                status:
-                  type: string
-                  enum:
-                    - accepted
-                    - declined
-              required:
-                - invitationId
-                - status
+              $ref: "#/components/schemas/UpdateInvitationStatusRequestBody"
       responses:
         "201":
           description: Resource Created
@@ -89,33 +78,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                permissions:
-                  type: object
-                  properties:
-                    translations:
-                      type: string
-                      enum:
-                        - viewer
-                        - editor
-                    languages:
-                      type: string
-                      enum:
-                        - viewer
-                        - editor
-                    collaborators:
-                      type: string
-                      enum:
-                        - viewer
-                        - editor
-                    project:
-                      type: string
-                      enum:
-                        - viewer
-                        - editor
-              required:
-                - permissions
+              $ref: "#/components/schemas/CreateAccessTokenRequestBody"
       responses:
         "201":
           description: Resource Created
@@ -199,40 +162,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                permissions:
-                  type: object
-                  properties:
-                    translations:
-                      type: string
-                      enum:
-                        - viewer
-                        - editor
-                    languages:
-                      type: string
-                      enum:
-                        - viewer
-                        - editor
-                    collaborators:
-                      type: string
-                      enum:
-                        - viewer
-                        - editor
-                    project:
-                      type: string
-                      enum:
-                        - viewer
-                        - editor
-              required:
-                - permissions
+              $ref: "#/components/schemas/UpdateAccessTokenPermissionsRequestBody"
       responses:
         "200":
           description: Ok
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UpdateAccessTokenResponse"
+                $ref: "#/components/schemas/UpdateAccessTokenPermissionsResponse"
         "400":
           description: Bad Request
           content:
@@ -277,17 +214,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                  pattern: ^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
-              required:
-                - email
+              $ref: "#/components/schemas/InviteUserRequestBody"
       responses:
-        "201":
-          description: Resource Created
+        "200":
+          description: Ok
           content:
             application/json:
               schema:
@@ -575,7 +505,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateProjectRequest"
+              $ref: "#/components/schemas/CreateProjectRequestBody"
       responses:
         "201":
           description: Resource Created
@@ -669,27 +599,14 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
   /api/translation:
-    put:
+    patch:
       operationId: renameTranslationKey
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                projectId:
-                  type: string
-                keyId:
-                  type: string
-                newKeyName:
-                  type: string
-                  minLength: 4
-                  maxLength: 512
-              required:
-                - projectId
-                - keyId
-                - newKeyName
+              $ref: "#/components/schemas/UpdateTranslationRequestBody"
       responses:
         "200":
           description: Ok
@@ -1121,7 +1038,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-    put:
+    patch:
       operationId: updateReferenceLocale
       requestBody:
         required: true
@@ -1315,6 +1232,200 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
+    Booleanish:
+      default: false
+      type: boolean
+    Collaborator:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        thumbnail_url:
+          description: Thumbnail URL of the user
+          type: string
+          format: uri
+        role:
+          $ref: "#/components/schemas/Role"
+      required:
+        - id
+        - name
+        - email
+        - role
+      additionalProperties: false
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        key_id:
+          type: string
+        project_id:
+          type: string
+        created_on:
+          $ref: "#/components/schemas/Timestamp"
+        edited_on:
+          $ref: "#/components/schemas/Timestamp"
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+            thumbnail_url:
+              type: string
+          required:
+            - id
+            - name
+            - email
+          additionalProperties: false
+        content:
+          type: string
+      required:
+        - id
+        - key_id
+        - project_id
+        - created_on
+        - user
+        - content
+      additionalProperties: false
+    CreateAccessTokenRequestBody:
+      type: object
+      properties:
+        permissions:
+          $ref: "#/components/schemas/ProjectPermissions"
+      required:
+        - permissions
+      additionalProperties: false
+    CreateAccessTokenResponse:
+      type: object
+      properties:
+        key:
+          type: string
+        details:
+          $ref: "#/components/schemas/ProjectApiKeyDetails"
+      required:
+        - key
+        - details
+      additionalProperties: false
+    CreateCommentRequestBody:
+      type: object
+      properties:
+        projectId:
+          type: string
+        keyId:
+          type: string
+        comment:
+          type: string
+          minLength: 1
+          maxLength: 1024
+        commentId:
+          type: string
+      required:
+        - projectId
+        - keyId
+        - comment
+        - commentId
+      additionalProperties: false
+    CreateLocaleRequestBody:
+      type: object
+      properties:
+        projectId:
+          type: string
+        locale:
+          $ref: "#/components/schemas/Locale"
+      required:
+        - projectId
+        - locale
+      additionalProperties: false
+    CreateLocaleResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LanguageItem"
+      required:
+        - data
+      additionalProperties: false
+    CreateProjectRequestBody:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 200
+        locales:
+          type: array
+          items:
+            $ref: "#/components/schemas/Locale"
+      required:
+        - name
+      additionalProperties: false
+    CreateProjectResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/Project"
+      required:
+        - data
+      additionalProperties: false
+    DeleteCommentRequestQuery:
+      type: object
+      properties:
+        commentId:
+          type: string
+        projectId:
+          type: string
+      required:
+        - commentId
+        - projectId
+      additionalProperties: false
+    DeleteLocaleRequestBody:
+      type: object
+      properties:
+        projectId:
+          type: string
+        locale:
+          $ref: "#/components/schemas/Locale"
+      required:
+        - projectId
+        - locale
+      additionalProperties: false
+    DeleteTranslationRequestQuery:
+      type: object
+      properties:
+        projectId:
+          type: string
+        keyId:
+          type: string
+      required:
+        - projectId
+        - keyId
+      additionalProperties: false
+    DeleteTranslationsRequestBody:
+      type: object
+      properties:
+        projectId:
+          type: string
+        keys:
+          minItems: 1
+          type: array
+          items:
+            type: string
+      required:
+        - projectId
+        - keys
+      additionalProperties: false
     ErrorResponse:
       type: object
       properties:
@@ -1325,42 +1436,274 @@ components:
       required:
         - error
       additionalProperties: false
-    SuccessResponse:
+    ExtendedTranslationItem:
       type: object
       properties:
-        success:
+        key:
+          type: string
+        key_id:
+          type: string
+        translations:
+          type: object
+          propertyNames:
+            $ref: "#/components/schemas/Locale"
+          additionalProperties:
+            type: string
+        plurals:
+          type: object
+          propertyNames:
+            $ref: "#/components/schemas/Locale"
+          additionalProperties:
+            type: object
+            propertyNames:
+              $ref: "#/components/schemas/Plurality"
+            additionalProperties:
+              type: string
+        comment_count:
+          type: number
+        description:
+          type:
+            - string
+            - "null"
+        tags:
+          $ref: "#/components/schemas/TranslationTags"
+        created_at:
+          $ref: "#/components/schemas/Timestamp"
+        updated_at:
+          $ref: "#/components/schemas/Timestamp"
+        created_by:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+            thumbnail:
+              type: string
+          required:
+            - id
+            - name
+            - email
+          additionalProperties: false
+      required:
+        - key
+        - key_id
+        - translations
+        - plurals
+        - comment_count
+        - tags
+        - created_at
+      additionalProperties: false
+    GenerateTranslationsRequestQuery:
+      type: object
+      properties:
+        project_id:
+          type: string
+        key:
+          type: string
+        from_locale:
+          $ref: "#/components/schemas/Locale"
+        to_locale:
+          $ref: "#/components/schemas/Locale"
+      required:
+        - project_id
+        - key
+        - from_locale
+        - to_locale
+      additionalProperties: false
+    GetCommentsRequestQuery:
+      type: object
+      properties:
+        projectId:
+          type: string
+        keyId:
+          type: string
+      required:
+        - projectId
+        - keyId
+      additionalProperties: false
+    GetCommentsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Comment"
+      required:
+        - data
+      additionalProperties: false
+    GetInvitationsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Invitation"
+      required:
+        - data
+      additionalProperties: false
+    GetLocaleResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LanguageItem"
+      required:
+        - data
+      additionalProperties: false
+    GetLocalesRequestQuery:
+      type: object
+      properties:
+        projectId:
+          type: string
+      required:
+        - projectId
+      additionalProperties: false
+    GetProjectsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Project"
+      required:
+        - data
+      additionalProperties: false
+    GetTranslationDataResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ExtendedTranslationItem"
+      required:
+        - data
+      additionalProperties: false
+    GetTranslationRequestQuery:
+      type: object
+      properties:
+        projectId:
+          type: string
+        keyId:
+          type: string
+      required:
+        - projectId
+        - keyId
+      additionalProperties: false
+    GetTranslationsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/TranslationItem"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required:
+        - data
+        - pagination
+      additionalProperties: false
+    GetTranslationTagsRequestQuery:
+      type: object
+      properties:
+        projectId:
+          type: string
+        keyId:
+          type: string
+      required:
+        - projectId
+        - keyId
+      additionalProperties: false
+    GetTranslationTagsResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/TranslationTags"
+      required:
+        - data
+      additionalProperties: false
+    GetUserPermissionsResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/ProjectPermissions"
+      required:
+        - data
+      additionalProperties: false
+    Invitation:
+      type: object
+      properties:
+        id:
+          type: string
+        role:
+          $ref: "#/components/schemas/Role"
+        invited_on:
+          $ref: "#/components/schemas/Timestamp"
+        project:
+          $ref: "#/components/schemas/InvitationProject"
+        invited_by:
+          $ref: "#/components/schemas/InvitedBy"
+      required:
+        - id
+        - role
+        - invited_on
+        - project
+        - invited_by
+      additionalProperties: false
+    InvitationProject:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+      required:
+        - id
+        - name
+      additionalProperties: false
+    InvitedBy:
+      type: object
+      properties:
+        user_id:
+          type: string
+        name:
+          type: string
+        thumbnail_url:
+          type: string
+        email:
+          type: string
+      required:
+        - user_id
+        - name
+        - email
+      additionalProperties: false
+    InviteUserRequestBody:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          pattern: ^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+      required:
+        - email
+      additionalProperties: false
+    LanguageItem:
+      type: object
+      properties:
+        id:
+          type: string
+        locale:
+          $ref: "#/components/schemas/Locale"
+        is_reference:
           type: boolean
       required:
-        - success
+        - id
+        - locale
+        - is_reference
       additionalProperties: false
-    PermissionCategory:
-      type: string
-      enum:
-        - translations
-        - languages
-        - collaborators
-        - project
-    PermissionRole:
-      type: string
-      enum:
-        - viewer
-        - editor
-    ProjectPermissions:
-      type: object
-      propertyNames:
-        $ref: "#/components/schemas/PermissionCategory"
-      additionalProperties:
-        $ref: "#/components/schemas/PermissionRole"
-    Role:
-      type: string
-      enum:
-        - owner
-        - collaborator
-    ProjectFeature:
-      type: string
-      enum:
-        - auto-translate
-        - suggestions
     Locale:
       type: string
       enum:
@@ -1510,10 +1853,39 @@ components:
         - yi_IL
         - yi_DE
         - tr_TR
-    Timestamp:
+    Pagination:
+      type: object
+      properties:
+        offset:
+          type: number
+          description: Page offset
+        count:
+          type: number
+          description: Amount of entries contained within this page
+        total_count:
+          type: number
+          description: Total amount of items in all pages
+        has_next:
+          type: boolean
+          description: Whether this is the last page in pagination
+      required:
+        - offset
+        - count
+        - total_count
+        - has_next
+      additionalProperties: false
+    PermissionCategory:
       type: string
-      format: date-time
-      pattern: ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$
+      enum:
+        - translations
+        - languages
+        - collaborators
+        - project
+    PermissionRole:
+      type: string
+      enum:
+        - viewer
+        - editor
     Plurality:
       type: string
       enum:
@@ -1523,57 +1895,6 @@ components:
         - few
         - many
         - other
-    Pagination:
-      type: object
-      properties:
-        offset:
-          type: number
-        count:
-          type: number
-        totalCount:
-          type: number
-      required:
-        - offset
-        - count
-        - totalCount
-      additionalProperties: false
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-        thumbnail_url:
-          type: string
-          format: uri
-      required:
-        - id
-        - name
-        - email
-      additionalProperties: false
-    Collaborator:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-        thumbnail_url:
-          type: string
-          format: uri
-        role:
-          $ref: "#/components/schemas/Role"
-      required:
-        - id
-        - name
-        - email
-        - role
-      additionalProperties: false
     Project:
       type: object
       properties:
@@ -1608,154 +1929,63 @@ components:
         - created_by
         - users
       additionalProperties: false
-    InvitationProject:
+    ProjectApiKeyDetails:
       type: object
       properties:
         id:
           type: string
         name:
           type: string
-        description:
+        start:
           type: string
+        enabled:
+          type: boolean
+        permissions:
+          $ref: "#/components/schemas/ProjectPermissions"
+        created_on:
+          $ref: "#/components/schemas/Timestamp"
+        last_request:
+          $ref: "#/components/schemas/Timestamp"
+        request_count:
+          type: number
+        expires_on:
+          $ref: "#/components/schemas/Timestamp"
       required:
         - id
-        - name
+        - start
+        - enabled
+        - permissions
+        - created_on
+        - request_count
       additionalProperties: false
-    InvitedBy:
+    ProjectFeature:
+      type: string
+      enum:
+        - auto-translate
+        - suggestions
+    ProjectPermissions:
+      type: object
+      propertyNames:
+        $ref: "#/components/schemas/PermissionCategory"
+      additionalProperties:
+        $ref: "#/components/schemas/PermissionRole"
+    Role:
+      type: string
+      enum:
+        - owner
+        - collaborator
+    SuccessResponse:
       type: object
       properties:
-        user_id:
-          type: string
-        name:
-          type: string
-        thumbnail_url:
-          type: string
-        email:
-          type: string
+        success:
+          type: boolean
       required:
-        - user_id
-        - name
-        - email
+        - success
       additionalProperties: false
-    Invitation:
-      type: object
-      properties:
-        id:
-          type: string
-        role:
-          $ref: "#/components/schemas/Role"
-        invited_on:
-          $ref: "#/components/schemas/Timestamp"
-        project:
-          $ref: "#/components/schemas/InvitationProject"
-        invited_by:
-          $ref: "#/components/schemas/InvitedBy"
-      required:
-        - id
-        - role
-        - invited_on
-        - project
-        - invited_by
-      additionalProperties: false
-    TranslationTags:
-      type: array
-      items:
-        type: string
-    TranslationItem:
-      type: object
-      properties:
-        key:
-          type: string
-        key_id:
-          type: string
-        translations:
-          type: object
-          propertyNames:
-            $ref: "#/components/schemas/Locale"
-          additionalProperties:
-            type: string
-        plurals:
-          type: object
-          propertyNames:
-            $ref: "#/components/schemas/Locale"
-          additionalProperties:
-            type: object
-            propertyNames:
-              $ref: "#/components/schemas/Plurality"
-            additionalProperties:
-              type: string
-        comment_count:
-          type: number
-        description:
-          type: string
-        tags:
-          $ref: "#/components/schemas/TranslationTags"
-      required:
-        - key
-        - key_id
-        - translations
-        - plurals
-        - comment_count
-        - tags
-      additionalProperties: false
-    ExtendedTranslationItem:
-      type: object
-      properties:
-        key:
-          type: string
-        key_id:
-          type: string
-        translations:
-          type: object
-          propertyNames:
-            $ref: "#/components/schemas/Locale"
-          additionalProperties:
-            type: string
-        plurals:
-          type: object
-          propertyNames:
-            $ref: "#/components/schemas/Locale"
-          additionalProperties:
-            type: object
-            propertyNames:
-              $ref: "#/components/schemas/Plurality"
-            additionalProperties:
-              type: string
-        comment_count:
-          type: number
-        description:
-          type: string
-        tags:
-          $ref: "#/components/schemas/TranslationTags"
-        created_at:
-          $ref: "#/components/schemas/Timestamp"
-        updated_at:
-          $ref: "#/components/schemas/Timestamp"
-        created_by:
-          type: object
-          properties:
-            id:
-              type: string
-            name:
-              type: string
-            email:
-              type: string
-            thumbnail:
-              type: string
-          required:
-            - id
-            - name
-            - email
-          additionalProperties: false
-      required:
-        - key
-        - key_id
-        - translations
-        - plurals
-        - comment_count
-        - tags
-        - created_at
-      additionalProperties: false
+    Timestamp:
+      type: string
+      format: date-time
+      pattern: ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$
     TranslationExportItem:
       type: object
       properties:
@@ -1787,258 +2017,44 @@ components:
         - translations
         - plurals
       additionalProperties: false
-    LanguageItem:
-      type: object
-      properties:
-        id:
-          type: string
-        locale:
-          $ref: "#/components/schemas/Locale"
-        is_reference:
-          type: boolean
-      required:
-        - id
-        - locale
-        - is_reference
-      additionalProperties: false
-    Comment:
-      type: object
-      properties:
-        id:
-          type: string
-        key_id:
-          type: string
-        project_id:
-          type: string
-        created_on:
-          $ref: "#/components/schemas/Timestamp"
-        edited_on:
-          $ref: "#/components/schemas/Timestamp"
-        user:
-          type: object
-          properties:
-            id:
-              type: string
-            name:
-              type: string
-            email:
-              type: string
-            thumbnail_url:
-              type: string
-          required:
-            - id
-            - name
-            - email
-          additionalProperties: false
-        content:
-          type: string
-      required:
-        - id
-        - key_id
-        - project_id
-        - created_on
-        - user
-        - content
-      additionalProperties: false
-    ProjectApiKeyDetails:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        start:
-          type: string
-        enabled:
-          type: boolean
-        permissions:
-          $ref: "#/components/schemas/ProjectPermissions"
-        created_on:
-          $ref: "#/components/schemas/Timestamp"
-        last_request:
-          $ref: "#/components/schemas/Timestamp"
-        request_count:
-          type: number
-        expires_on:
-          $ref: "#/components/schemas/Timestamp"
-      required:
-        - id
-        - start
-        - enabled
-        - permissions
-        - created_on
-        - request_count
-      additionalProperties: false
-    Booleanish:
-      default: false
-      type: boolean
-    GetInvitationsResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/Invitation"
-      required:
-        - data
-      additionalProperties: false
-    CreateAccessTokenResponse:
+    TranslationItem:
       type: object
       properties:
         key:
           type: string
-        details:
-          $ref: "#/components/schemas/ProjectApiKeyDetails"
+        key_id:
+          type: string
+        translations:
+          type: object
+          propertyNames:
+            $ref: "#/components/schemas/Locale"
+          additionalProperties:
+            type: string
+        plurals:
+          type: object
+          propertyNames:
+            $ref: "#/components/schemas/Locale"
+          additionalProperties:
+            type: object
+            propertyNames:
+              $ref: "#/components/schemas/Plurality"
+            additionalProperties:
+              type: string
+        comment_count:
+          type: number
+        description:
+          type:
+            - string
+            - "null"
+        tags:
+          $ref: "#/components/schemas/TranslationTags"
       required:
         - key
-        - details
-      additionalProperties: false
-    UpdateAccessTokenResponse:
-      type: object
-      properties:
-        details:
-          $ref: "#/components/schemas/ProjectApiKeyDetails"
-      required:
-        - details
-      additionalProperties: false
-    UpdateProjectResponse:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 3
-          maxLength: 50
-        description:
-          type: string
-          maxLength: 500
-      required:
-        - name
-      additionalProperties: false
-    GetUserPermissionsResponse:
-      type: object
-      properties:
-        data:
-          $ref: "#/components/schemas/ProjectPermissions"
-      required:
-        - data
-      additionalProperties: false
-    UpdateUserPermissionsRequestBody:
-      type: object
-      properties:
-        permissions:
-          type: object
-          properties:
-            translations:
-              type: string
-              enum:
-                - viewer
-                - editor
-            languages:
-              type: string
-              enum:
-                - viewer
-                - editor
-            collaborators:
-              type: string
-              enum:
-                - viewer
-                - editor
-            project:
-              type: string
-              enum:
-                - viewer
-                - editor
-          additionalProperties: false
-      required:
-        - permissions
-      additionalProperties: false
-    CreateProjectRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 50
-        description:
-          type: string
-          maxLength: 500
-        locales:
-          type: array
-          items:
-            $ref: "#/components/schemas/Locale"
-      required:
-        - name
-      additionalProperties: false
-    CreateProjectResponse:
-      type: object
-      properties:
-        data:
-          $ref: "#/components/schemas/Project"
-      required:
-        - data
-      additionalProperties: false
-    GetProjectsResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/Project"
-      required:
-        - data
-      additionalProperties: false
-    GetTranslationDataResponse:
-      type: object
-      properties:
-        data:
-          $ref: "#/components/schemas/ExtendedTranslationItem"
-      required:
-        - data
-      additionalProperties: false
-    GetTranslationTagsRequest:
-      type: object
-      properties:
-        projectId:
-          type: string
-        keyId:
-          type: string
-      required:
-        - projectId
-        - keyId
-      additionalProperties: false
-    GetTranslationTagsResponse:
-      type: object
-      properties:
-        data:
-          $ref: "#/components/schemas/TranslationTags"
-      required:
-        - data
-      additionalProperties: false
-    UpdateTranslationTagsRequestBody:
-      type: object
-      properties:
-        projectId:
-          type: string
-        keyId:
-          type: string
-        tags:
-          minItems: 1
-          type: array
-          items:
-            type: string
-            maxLength: 32
-      required:
-        - projectId
-        - keyId
+        - key_id
+        - translations
+        - plurals
+        - comment_count
         - tags
-      additionalProperties: false
-    UpdateTranslationTagsResponse:
-      type: object
-      properties:
-        data:
-          $ref: "#/components/schemas/TranslationTags"
-      required:
-        - data
       additionalProperties: false
     TranslationsExportRequestQuery:
       type: object
@@ -2068,36 +2084,52 @@ components:
         - projectId
         - format
       additionalProperties: false
-    GetLocaleResponse:
+    TranslationTags:
+      type: array
+      items:
+        type: string
+    UpdateAccessTokenPermissionsRequestBody:
       type: object
       properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/LanguageItem"
+        permissions:
+          $ref: "#/components/schemas/ProjectPermissions"
       required:
-        - data
+        - permissions
       additionalProperties: false
-    CreateLocaleRequestBody:
+    UpdateAccessTokenPermissionsResponse:
       type: object
       properties:
-        projectId:
+        details:
+          $ref: "#/components/schemas/ProjectApiKeyDetails"
+      required:
+        - details
+      additionalProperties: false
+    UpdateInvitationStatusRequestBody:
+      type: object
+      properties:
+        invitationId:
           type: string
-        locale:
-          $ref: "#/components/schemas/Locale"
+        status:
+          type: string
+          enum:
+            - accepted
+            - declined
       required:
-        - projectId
-        - locale
+        - invitationId
+        - status
       additionalProperties: false
-    CreateLocaleResponse:
+    UpdateProjectResponse:
       type: object
       properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/LanguageItem"
+        name:
+          type: string
+          minLength: 3
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 200
       required:
-        - data
+        - name
       additionalProperties: false
     UpdateReferenceLocaleRequestBody:
       type: object
@@ -2110,18 +2142,21 @@ components:
         - projectId
         - locale
       additionalProperties: false
-    GetTranslationsResponse:
+    UpdateTranslationRequestBody:
       type: object
       properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/TranslationItem"
-        pagination:
-          $ref: "#/components/schemas/Pagination"
+        projectId:
+          type: string
+        keyId:
+          type: string
+        newKeyName:
+          type: string
+          minLength: 4
+          maxLength: 512
       required:
-        - data
-        - pagination
+        - projectId
+        - keyId
+        - newKeyName
       additionalProperties: false
     UpdateTranslationsRequestBody:
       type: object
@@ -2164,18 +2199,56 @@ components:
         - projectId
         - entries
       additionalProperties: false
-    DeleteTranslationsRequestBody:
+    UpdateTranslationTagsRequestBody:
       type: object
       properties:
         projectId:
           type: string
-        keys:
+        keyId:
+          type: string
+        tags:
           minItems: 1
           type: array
           items:
             type: string
+            maxLength: 32
       required:
         - projectId
-        - keys
+        - keyId
+        - tags
+      additionalProperties: false
+    UpdateTranslationTagsResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/TranslationTags"
+      required:
+        - data
+      additionalProperties: false
+    UpdateUserPermissionsRequestBody:
+      type: object
+      properties:
+        permissions:
+          $ref: "#/components/schemas/ProjectPermissions"
+      required:
+        - permissions
+      additionalProperties: false
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        thumbnail_url:
+          description: Thumbnail URL of the user
+          type: string
+          format: uri
+      required:
+        - id
+        - name
+        - email
       additionalProperties: false
 
