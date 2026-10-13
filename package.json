@@ -2,7 +2,7 @@
   "name": "@labeleer/api",
   "type": "module",
   "description": "Wrapper for Labeleer API interaction",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "private": false,
   "homepage": "https://labeleer.com",
   "license": "MIT",
@@ -24,12 +24,12 @@
     }
   },
   "dependencies": {
-    "zod": "^4.6.5"
+    "zod": "^4.6.6",
+    "chalk": "^6.0.1"
   },
   "devDependencies": {
     "@hey-api/openapi-ts": "0.99.0",
     "@types/node": "^26.1.2",
-    "chalk": "^6.0.1",
     "openapi-types": "^12.1.3",
     "prettier": "^3.7.4",
     "tsx": "4.23.12",
